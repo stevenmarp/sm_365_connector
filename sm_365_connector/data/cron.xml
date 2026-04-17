@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ir_act_server_365_sync" model="ir.actions.server">
+        <field name="name">Microsoft 365: Auto Sync</field>
+        <field name="model_id" ref="model_sm_365_connection"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_all()</field>
+    </record>
+
+    <record id="ir_cron_365_sync" model="ir.cron">
+        <field name="ir_actions_server_id" ref="ir_act_server_365_sync"/>
+        <field name="interval_number">60</field>
+        <field name="interval_type">minutes</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_act_server_365_renew_sub" model="ir.actions.server">
+        <field name="name">Microsoft 365: Renew Graph Subscriptions</field>
+        <field name="model_id" ref="model_sm_365_subscription"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_renew()</field>
+    </record>
+
+    <record id="ir_cron_365_renew_sub" model="ir.cron">
+        <field name="ir_actions_server_id" ref="ir_act_server_365_renew_sub"/>
+        <field name="interval_number">6</field>
+        <field name="interval_type">hours</field>
+        <field name="active">True</field>
+    </record>
+
+</odoo>
