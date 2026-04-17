@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Top-level menu -->
+    <menuitem id="menu_365_root"
+              name="Microsoft 365"
+              web_icon="sm_365_connector"
+              groups="sm_365_connector.group_365_user"
+              sequence="200"/>
+
+    <!-- Connections (kanban dashboard by default) -->
+    <menuitem id="menu_365_connection"
+              name="Dashboard"
+              parent="menu_365_root"
+              action="action_365_connection"
+              sequence="10"/>
+
+    <!-- Outlook Inbox -->
+    <menuitem id="menu_365_inbox"
+              name="Outlook Inbox"
+              parent="menu_365_root"
+              action="action_365_inbox"
+              sequence="15"/>
+
+    <!-- Email Rules -->
+    <menuitem id="menu_365_email_rule"
+              name="Email Rules"
+              parent="menu_365_root"
+              action="action_365_email_rule"
+              sequence="25"/>
+
+    <!-- Webhooks -->
+    <menuitem id="menu_365_subscription"
+              name="Webhooks"
+              parent="menu_365_root"
+              action="action_365_subscription"
+              sequence="30"
+              groups="sm_365_connector.group_365_manager"/>
+
+    <!-- Sync History -->
+    <menuitem id="menu_365_sync_log"
+              name="Sync History"
+              parent="menu_365_root"
+              action="action_365_sync_log"
+              sequence="40"/>
+
+</odoo>

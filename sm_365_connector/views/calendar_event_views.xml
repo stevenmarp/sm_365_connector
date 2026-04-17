@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Add Teams Meeting fields to calendar.event form -->
+    <record id="view_calendar_event_form_365" model="ir.ui.view">
+        <field name="name">calendar.event.form.teams</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_create_teams_meeting" type="object"
+                            string="Create Teams Meeting" class="btn-primary"
+                            icon="fa-video-camera"
+                            invisible="teams_join_url"/>
+                    <button name="action_join_teams_meeting" type="object"
+                            string="Join Teams Meeting" class="btn-success"
+                            icon="fa-external-link"
+                            invisible="not teams_join_url"/>
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='description']" position="after">
+                <group string="Microsoft Teams" invisible="not is_teams_meeting and not teams_join_url">
+                    <field name="is_teams_meeting"/>
+                    <field name="teams_join_url" widget="url" readonly="1"/>
+                    <field name="teams_conference_id" readonly="1" invisible="not teams_conference_id"/>
+                    <field name="microsoft365_id" readonly="1" invisible="not microsoft365_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
