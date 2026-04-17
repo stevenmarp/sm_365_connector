@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Add "Send via Outlook" button + Microsoft 365 ID to partner form -->
+    <record id="view_partner_form_365" model="ir.ui.view">
+        <field name="name">res.partner.form.365</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="%(sm_365_connector.action_outlook_send_email)d"
+                        type="action" class="oe_stat_button"
+                        icon="fa-envelope"
+                        context="{'default_partner_id': id, 'default_to_email': email}"
+                        groups="sm_365_connector.group_365_user">
+                    <span>Send via Outlook</span>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='phone']" position="after">
+                <field name="microsoft365_id" readonly="1"
+                       invisible="not microsoft365_id"
+                       groups="base.group_no_one"/>
+                <field name="dynamics365_id" readonly="1"
+                       invisible="not dynamics365_id"
+                       groups="base.group_no_one"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
