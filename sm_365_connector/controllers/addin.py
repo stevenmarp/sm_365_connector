@@ -152,7 +152,7 @@ class OutlookAddinController(http.Controller):
         return {'ok': ok, 'message': message, 'record_id': record_id}
 
     @http.route(
-        '/microsoft365/addin/create_lead', type='jsonrpc', auth='user',
+        '/microsoft365/addin/create_lead', type='json', auth='user',
         csrf=False, methods=['POST'],
     )
     def create_lead(self, **kw):
@@ -169,7 +169,7 @@ class OutlookAddinController(http.Controller):
         return self._respond(True, f'Lead #{lead.id} created', lead.id)
 
     @http.route(
-        '/microsoft365/addin/create_contact', type='jsonrpc', auth='user',
+        '/microsoft365/addin/create_contact', type='json', auth='user',
         csrf=False, methods=['POST'],
     )
     def create_contact(self, **kw):
@@ -182,7 +182,7 @@ class OutlookAddinController(http.Controller):
         return self._respond(True, f'Contact #{partner.id} created', partner.id)
 
     @http.route(
-        '/microsoft365/addin/create_task', type='jsonrpc', auth='user',
+        '/microsoft365/addin/create_task', type='json', auth='user',
         csrf=False, methods=['POST'],
     )
     def create_task(self, **kw):
