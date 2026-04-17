@@ -10,7 +10,7 @@
     <record id="group_365_manager" model="res.groups">
         <field name="name">Microsoft 365 Manager</field>
         <field name="implied_ids" eval="[(4, ref('group_365_user'))]"/>
-        <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         <field name="comment">Full access: configure connections, manage settings, view logs.</field>
     </record>
 
