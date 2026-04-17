@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_outlook_send_email_form" model="ir.ui.view">
+        <field name="name">sm.365.send.email.form</field>
+        <field name="model">sm.365.send.email</field>
+        <field name="arch" type="xml">
+            <form string="Send Email via Outlook">
+                <group>
+                    <field name="connection_id" options="{'no_create': True}"/>
+                    <field name="partner_id"/>
+                    <field name="to_email"/>
+                    <field name="subject"/>
+                </group>
+                <field name="body"/>
+                <footer>
+                    <button name="action_send" string="Send" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_outlook_send_email" model="ir.actions.act_window">
+        <field name="name">Send via Outlook</field>
+        <field name="res_model">sm.365.send.email</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

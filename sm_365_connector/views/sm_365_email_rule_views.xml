@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--  EMAIL RULE                                                   -->
+    <!-- ============================================================ -->
+    <record id="view_365_email_rule_list" model="ir.ui.view">
+        <field name="name">sm.365.email.rule.list</field>
+        <field name="model">sm.365.email.rule</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="connection_id"/>
+                <field name="from_domain"/>
+                <field name="subject_contains"/>
+                <field name="action_type"/>
+                <field name="match_count"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_365_email_rule_form" model="ir.ui.view">
+        <field name="name">sm.365.email.rule.form</field>
+        <field name="model">sm.365.email.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" attrs="{'invisible': [('active', '!=', False)]}"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Rule name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="connection_id"/>
+                            <field name="sequence"/>
+                            <field name="active" invisible="1"/>
+                            <field name="match_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Matching Conditions" name="match">
+                            <group>
+                                <field name="from_domain" placeholder="@acme.com"/>
+                                <field name="from_contains"/>
+                                <field name="subject_contains"/>
+                                <field name="body_contains"/>
+                            </group>
+                            <div class="alert alert-info" role="status">
+                                All non-empty conditions are ANDed together. Leave a field blank to skip it.
+                            </div>
+                        </page>
+                        <page string="Action" name="action">
+                            <group>
+                                <field name="action_type"/>
+                                <field name="team_id" attrs="{'invisible': [('action_type', 'not in', ['lead', 'opportunity'])]}"/>
+                                <field name="user_id"/>
+                                <field name="project_id" attrs="{'invisible': [('action_type', '!=', 'task')]}"/>
+                                <field name="tag_ids" widget="many2many_tags" attrs="{'invisible': [('action_type', 'not in', ['lead', 'opportunity'])]}"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_365_email_rule" model="ir.actions.act_window">
+        <field name="name">Email Auto-Conversion Rules</field>
+        <field name="res_model">sm.365.email.rule</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--  SUBSCRIPTION (Webhooks)                                      -->
+    <!-- ============================================================ -->
+    <record id="view_365_subscription_list" model="ir.ui.view">
+        <field name="name">sm.365.subscription.list</field>
+        <field name="model">sm.365.subscription</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="connection_id"/>
+                <field name="resource"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'" decoration-danger="state in ('error', 'expired')"/>
+                <field name="expiration"/>
+                <field name="notification_count"/>
+                <field name="last_notification"/>
+                <button name="action_renew" type="object" string="Renew" icon="fa-refresh"/>
+                <button name="action_unsubscribe" type="object" string="Unsubscribe" icon="fa-trash"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_365_subscription_form" model="ir.ui.view">
+        <field name="name">sm.365.subscription.form</field>
+        <field name="model">sm.365.subscription</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_subscribe" type="object" string="Subscribe" class="btn-primary" attrs="{'invisible': [('state', '=', 'active')]}"/>
+                    <button name="action_renew" type="object" string="Renew" attrs="{'invisible': [('state', '!=', 'active')]}"/>
+                    <button name="action_unsubscribe" type="object" string="Unsubscribe"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="connection_id"/>
+                            <field name="resource"/>
+                            <field name="subscription_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="expiration" readonly="1"/>
+                            <field name="last_notification" readonly="1"/>
+                            <field name="notification_count" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_365_subscription" model="ir.actions.act_window">
+        <field name="name">Webhook Subscriptions</field>
+        <field name="res_model">sm.365.subscription</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

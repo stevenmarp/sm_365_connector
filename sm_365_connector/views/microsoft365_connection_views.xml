@@ -1,0 +1,213 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--  LIST VIEW                                                    -->
+    <!-- ============================================================ -->
+    <record id="view_365_connection_list" model="ir.ui.view">
+        <field name="name">sm.365.connection.list</field>
+        <field name="model">sm.365.connection</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="outlook_user_email"/>
+                <field name="is_shared"/>
+                <field name="dynamics_enabled"/>
+                <field name="webhooks_enabled"/>
+                <field name="last_sync"/>
+                <field name="state" widget="badge" decoration-success="state in ('outlook_connected','fully_connected')" decoration-danger="state == 'error'" decoration-info="state == 'draft'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--  FORM VIEW                                                    -->
+    <!-- ============================================================ -->
+    <record id="view_365_connection_form" model="ir.ui.view">
+        <field name="name">sm.365.connection.form</field>
+        <field name="model">sm.365.connection</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_authorize_outlook" string="Authorize Outlook" type="object" class="btn-primary" attrs="{'invisible': [('state', 'not in', ['draft', 'error'])]}"/>
+                    <button name="action_connect_dynamics" string="Connect Dynamics CRM" type="object" class="btn-primary" attrs="{'invisible': ['|', ('dynamics_enabled', '=', False), ('is_dynamics_connected', '!=', False)]}"/>
+                    <button name="action_test_connection" string="Test Connection" type="object" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                    <button name="action_disconnect" string="Disconnect" type="object" class="btn-secondary" confirm="This will disconnect all Microsoft services. Continue?" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,outlook_connected,fully_connected"/>
+                </header>
+
+                <sheet>
+                    <!-- Smart buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_sync_logs" type="object" class="oe_stat_button" icon="fa-history">
+                            <field name="sync_log_count" widget="statinfo" string="Sync Logs"/>
+                        </button>
+                        <button name="action_view_email_rules" type="object" class="oe_stat_button" icon="fa-filter">
+                            <field name="email_rule_count" widget="statinfo" string="Email Rules"/>
+                        </button>
+                        <button name="action_view_subscriptions" type="object" class="oe_stat_button" icon="fa-bolt">
+                            <field name="subscription_count" widget="statinfo" string="Webhooks"/>
+                        </button>
+                        <button name="action_retry_failed" type="object" class="oe_stat_button" icon="fa-refresh" attrs="{'invisible': [('sync_log_error_count', '=', False)]}">
+                            <field name="sync_log_error_count" widget="statinfo" string="Retry Failed"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="My Microsoft 365"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Azure AD Application">
+                            <field name="tenant_id"/>
+                            <field name="client_id"/>
+                            <field name="client_secret" password="True"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Ownership &amp; Status">
+                            <field name="user_id"/>
+                            <field name="is_shared"/>
+                            <field name="outlook_user_email" attrs="{'invisible': [('outlook_user_email', '=', False)]}"/>
+                            <field name="last_sync"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <!-- TAB: Outlook Sync -->
+                        <page string="Outlook Sync" name="outlook">
+                            <group>
+                                <group>
+                                    <field name="sync_contacts"/>
+                                    <field name="sync_calendar"/>
+                                    <field name="sync_emails"/>
+                                </group>
+                                <group>
+                                    <field name="auto_sync"/>
+                                    <field name="sync_interval" attrs="{'invisible': [('auto_sync', '=', False)]}"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-info" role="alert" attrs="{'invisible': [('state', '=', 'draft')]}">
+                                <strong>Outlook is connected.</strong>
+                                Use the buttons below to sync data manually.
+                            </div>
+                            <div class="alert alert-warning" role="alert" attrs="{'invisible': [('state', '!=', 'draft')]}">
+                                <strong>Not connected yet.</strong>
+                                Click "Authorize Outlook" to connect your account.
+                            </div>
+                            <div attrs="{'invisible': [('state', '=', 'draft')]}">
+                                <button name="action_sync_contacts" string="Sync Contacts Now" type="object" class="btn-primary me-2" icon="fa-users" attrs="{'invisible': [('sync_contacts', '=', False)]}"/>
+                                <button name="action_sync_calendar" string="Sync Calendar Now" type="object" class="btn-primary me-2" icon="fa-calendar" attrs="{'invisible': [('sync_calendar', '=', False)]}"/>
+                                <button name="action_import_emails" string="Import Emails Now" type="object" class="btn-primary me-2" icon="fa-envelope" attrs="{'invisible': [('sync_emails', '=', False)]}"/>
+                                <button name="action_sync_todo_tasks" string="Sync Tasks Now" type="object" class="btn-primary" icon="fa-check-square-o"/>
+                            </div>
+                            <div class="mt-1">
+                                <button name="action_refetch_email_images" string="Re-download email images" type="object" class="btn-link btn-sm ps-0" icon="fa-picture-o" attrs="{'invisible': [('sync_emails', '=', False)]}"/>
+                            </div>
+                        </page>
+
+                        <!-- TAB: OneDrive -->
+                        <page string="OneDrive" name="onedrive">
+                            <group>
+                                <group>
+                                    <field name="onedrive_enabled"/>
+                                    <field name="onedrive_folder_path" attrs="{'invisible': [('onedrive_enabled', '=', False)]}"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-info" role="status" attrs="{'invisible': [('onedrive_enabled', '=', False)]}">
+                                <strong>OneDrive enabled.</strong>
+                                Attachments can be offloaded to OneDrive to save Odoo storage.
+                            </div>
+                            <button name="action_upload_attachments_to_onedrive" type="object" string="Upload Pending Attachments" class="btn-primary" icon="fa-cloud-upload" attrs="{'invisible': [('onedrive_enabled', '=', False)]}"/>
+                        </page>
+
+                        <!-- TAB: Email Rules -->
+                        <page string="Email Rules" name="rules">
+                            <field name="email_rule_ids">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="from_domain"/>
+                                    <field name="subject_contains"/>
+                                    <field name="action_type"/>
+                                    <field name="match_count" readonly="1"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <!-- TAB: Real-time Webhooks -->
+                        <page string="Real-Time Sync" name="webhooks">
+                            <group>
+                                <group>
+                                    <field name="webhooks_enabled" readonly="1"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-warning" role="status" attrs="{'invisible': [('webhooks_enabled', '!=', False)]}">
+                                <strong>Webhooks not active.</strong><br/>
+                                Real-time sync uses Microsoft Graph change notifications.
+                                Your Odoo server must be reachable via HTTPS from the internet
+                                at: <code>/microsoft365/webhook</code>
+                            </div>
+                            <div class="alert alert-success" role="status" attrs="{'invisible': [('webhooks_enabled', '=', False)]}">
+                                <strong>Real-time sync active.</strong>
+                                Changes in Outlook will be pushed to Odoo within seconds.
+                            </div>
+                            <button name="action_enable_webhooks" type="object" string="Enable Webhooks" class="btn-primary" icon="fa-bolt" attrs="{'invisible': ['|', ('webhooks_enabled', '!=', False), ('state', '=', 'draft')]}"/>
+                            <button name="action_disable_webhooks" type="object" string="Disable Webhooks" class="btn-secondary" attrs="{'invisible': [('webhooks_enabled', '=', False)]}"/>
+                            <separator string="Active Subscriptions"/>
+                            <field name="subscription_ids" readonly="1">
+                                <tree>
+                                    <field name="resource"/>
+                                    <field name="state"/>
+                                    <field name="expiration"/>
+                                    <field name="notification_count"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <!-- TAB: Dynamics 365 CRM -->
+                        <page string="Dynamics 365 CRM" name="dynamics">
+                            <group>
+                                <group>
+                                    <field name="dynamics_enabled"/>
+                                    <field name="dynamics_org" attrs="{'invisible': [('dynamics_enabled', '=', False)], 'required': [('dynamics_enabled', '!=', False)]}"/>
+                                    <field name="dynamics_region" attrs="{'invisible': [('dynamics_enabled', '=', False)]}"/>
+                                    <field name="sync_crm" attrs="{'invisible': [('dynamics_enabled', '=', False)]}"/>
+                                </group>
+                            </group>
+                            <div attrs="{'invisible': ['|', ('dynamics_enabled', '=', False), ('is_dynamics_connected', '=', False)]}">
+                                <button name="action_import_crm_leads" string="Import Leads" type="object" class="btn-primary me-2" icon="fa-user-plus"/>
+                                <button name="action_import_crm_opportunities" string="Import Opportunities" type="object" class="btn-primary me-2" icon="fa-trophy"/>
+                                <button name="action_import_crm_accounts" string="Import Accounts" type="object" class="btn-primary" icon="fa-building"/>
+                                <button name="action_import_crm_contacts" string="Import Contacts" type="object" class="btn-primary ms-2" icon="fa-address-book"/>
+                            </div>
+                            <field name="is_dynamics_connected" invisible="1"/>
+                            <field name="is_outlook_connected" invisible="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--  ACTION                                                       -->
+    <!-- ============================================================ -->
+    <record id="action_365_connection" model="ir.actions.act_window">
+        <field name="name">Microsoft 365 Connector</field>
+        <field name="res_model">sm.365.connection</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Microsoft 365 connection
+            </p>
+            <p>
+                Connect Outlook (contacts, calendar, emails, tasks), Microsoft Teams,
+                OneDrive and Dynamics 365 CRM — all in one place.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_365_connection_user,sm.365.connection.user,model_sm_365_connection,group_365_user,1,0,0,0
+access_365_connection_manager,sm.365.connection.manager,model_sm_365_connection,group_365_manager,1,1,1,1
+access_365_sync_log_user,sm.365.sync.log.user,model_sm_365_sync_log,group_365_user,1,0,0,0
+access_365_sync_log_manager,sm.365.sync.log.manager,model_sm_365_sync_log,group_365_manager,1,1,1,1
+access_365_send_email_user,sm.365.send.email.user,model_sm_365_send_email,group_365_user,1,1,1,0
+access_365_email_rule_user,sm.365.email.rule.user,model_sm_365_email_rule,group_365_user,1,0,0,0
+access_365_email_rule_manager,sm.365.email.rule.manager,model_sm_365_email_rule,group_365_manager,1,1,1,1
+access_365_subscription_user,sm.365.subscription.user,model_sm_365_subscription,group_365_user,1,0,0,0
+access_365_subscription_manager,sm.365.subscription.manager,model_sm_365_subscription,group_365_manager,1,1,1,1

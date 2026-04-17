@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+
+    <!-- Add Microsoft To Do badge/field to project.task form -->
+    <record id="view_project_task_form_365" model="ir.ui.view">
+        <field name="name">project.task.form.todo</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Microsoft To Do" attrs="{'invisible': [('microsoft365_id', '=', False)]}">
+                    <field name="microsoft365_id" readonly="1"/>
+                    <field name="microsoft365_list_id" readonly="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
