@@ -8,7 +8,7 @@
         <field name="name">sm.365.email.rule.list</field>
         <field name="model">sm.365.email.rule</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="connection_id"/>
@@ -17,7 +17,7 @@
                 <field name="action_type"/>
                 <field name="match_count"/>
                 <field name="active" widget="boolean_toggle"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -82,7 +82,7 @@
         <field name="name">sm.365.subscription.list</field>
         <field name="model">sm.365.subscription</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="connection_id"/>
                 <field name="resource"/>
                 <field name="state" widget="badge"
@@ -95,7 +95,7 @@
                         string="Renew" icon="fa-refresh"/>
                 <button name="action_unsubscribe" type="object"
                         string="Unsubscribe" icon="fa-trash"/>
-            </list>
+            </tree>
         </field>
     </record>
 

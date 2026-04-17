@@ -6,14 +6,14 @@
         <field name="name">sm.365.inbox.list</field>
         <field name="model">mail.message</field>
         <field name="arch" type="xml">
-            <list create="false" string="Outlook Inbox">
+            <tree create="false" string="Outlook Inbox">
                 <field name="microsoft365_is_read" widget="boolean_toggle" string="Read"/>
                 <field name="date"/>
                 <field name="email_from"/>
                 <field name="subject"/>
                 <field name="microsoft365_has_attachments" widget="boolean_toggle" string="Attach" readonly="1"/>
                 <field name="microsoft365_conversation_id" optional="hide"/>
-            </list>
+            </tree>
         </field>
     </record>
 

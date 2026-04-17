@@ -5,7 +5,7 @@
         <field name="name">sm.365.sync.log.list</field>
         <field name="model">sm.365.sync.log</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="create_date" string="Date"/>
                 <field name="connection_id"/>
                 <field name="sync_type"/>
@@ -13,7 +13,7 @@
                        decoration-success="status == 'success'"
                        decoration-danger="status == 'error'"/>
                 <field name="details"/>
-            </list>
+            </tree>
         </field>
     </record>
 

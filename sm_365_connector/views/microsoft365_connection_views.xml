@@ -8,7 +8,7 @@
         <field name="name">sm.365.connection.list</field>
         <field name="model">sm.365.connection</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
                 <field name="user_id"/>
                 <field name="outlook_user_email"/>
@@ -20,7 +20,7 @@
                        decoration-success="state in ('outlook_connected','fully_connected')"
                        decoration-danger="state == 'error'"
                        decoration-info="state == 'draft'"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -172,7 +172,7 @@
                         <!-- TAB: Email Rules -->
                         <page string="Email Rules" name="rules">
                             <field name="email_rule_ids">
-                                <list editable="bottom">
+                                <tree editable="bottom">
                                     <field name="sequence" widget="handle"/>
                                     <field name="name"/>
                                     <field name="from_domain"/>
@@ -180,7 +180,7 @@
                                     <field name="action_type"/>
                                     <field name="match_count" readonly="1"/>
                                     <field name="active" widget="boolean_toggle"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
 
@@ -210,12 +210,12 @@
                                     invisible="not webhooks_enabled"/>
                             <separator string="Active Subscriptions"/>
                             <field name="subscription_ids" readonly="1">
-                                <list>
+                                <tree>
                                     <field name="resource"/>
                                     <field name="state"/>
                                     <field name="expiration"/>
                                     <field name="notification_count"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
 
